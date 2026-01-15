@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Edit School{% else %}Add School{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">
+        {% if object %}Edit School{% else %}Add New School{% endif %}
+    </h2>
+    
+    <div class="max-w-2xl">
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.udise_code.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        UDISE Code
+                    </label>
+                    {{ form.udise_code }}
+                    {% if form.udise_code.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.udise_code.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        School Name
+                    </label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label for="{{ form.taluka.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Taluka
+                    </label>
+                    {{ form.taluka }}
+                    {% if form.taluka.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.taluka.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label for="{{ form.school_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        School Type
+                    </label>
+                    {{ form.school_type }}
+                    {% if form.school_type.errors %}
+                    <p class="text-red-500 text-sm mt-1">{{ form.school_type.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">School Category</label>
+                <div class="space-y-2">
+                    {% for choice in form.type %}
+                        <label class="inline-flex items-center mr-6">
+                            {{ choice.tag }}
+                            <span class="ml-2 text-sm text-gray-700">{{ choice.choice_label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                {% if form.type.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.type.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <div class="space-y-2">
+                    {% for choice in form.location %}
+                        <label class="inline-flex items-center mr-6">
+                            {{ choice.tag }}
+                            <span class="ml-2 text-sm text-gray-700">{{ choice.choice_label }}</span>
+                        </label>
+                    {% endfor %}
+                </div>
+                {% if form.location.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.location.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.medium.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Medium of Instruction
+                </label>
+                {{ form.medium }}
+                {% if form.medium.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.medium.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="flex space-x-4">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                    {% if object %}Update{% else %}Create{% endif %}
+                </button>
+                <a href="{% url 'manage_schools' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

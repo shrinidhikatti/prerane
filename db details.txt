@@ -1,0 +1,42 @@
+(venv) rrr@Krishna-Nadigers-MacBook-Pro Final strict % gcloud sql instances create assignment-tracker-db \
+      --database-version=POSTGRES_14 \
+      --tier=db-f1-micro \
+      --region=asia-south1 \
+      --project=belagavi-assignment-tracker
+Creating Cloud SQL instance for POSTGRES_14...⠶^R                                                                                 
+Creating Cloud SQL instance for POSTGRES_14...⠼                                                                                   
+Creating Cloud SQL instance for POSTGRES_14...⠶                                                                                   
+Creating Cloud SQL instance for POSTGRES_14...⠼                                                                                   
+Creating Cloud SQL instance for POSTGRES_14...done.                                                                               
+Created [https://sqladmin.googleapis.com/sql/v1beta4/projects/belagavi-assignment-tracker/instances/assignment-tracker-db].
+NAME                   DATABASE_VERSION  LOCATION       TIER         PRIMARY_ADDRESS  PRIVATE_ADDRESS  STATUS
+assignment-tracker-db  POSTGRES_14       asia-south1-c  db-f1-micro  34.93.176.220    -                RUNNABLE
+
+gcloud sql users create django-user \
+      --instance=assignment-tracker-db \
+      --password="Chinnu_Krishna_wrecK_567*" \
+      --project=belagavi-assignment-tracker
+
+echo -n "Chinnu_Krishna_wrecK_567*" | gcloud secrets create DB_PASSWORD --data-file=- --project=belagavi-assignment-tracker
+
+(venv) rrr@Krishna-Nadigers-MacBook-Pro Final strict % echo -n "my password" | gcloud secrets create DB_PASSWORD --data-file=- --project=belagavi-assignment-tracker
+API [secretmanager.googleapis.com] not enabled on project [belagavi-assignment-tracker]. Would you like to enable and retry (this 
+will take a few minutes)? (y/N)?  
+ERROR: (gcloud.secrets.create) [krnadiger@gmail.com] does not have permission to access projects instance [belagavi-assignment-tracker] (or it may not exist): Secret Manager API has not been used in project belagavi-assignment-tracker before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=belagavi-assignment-tracker then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry. This command is authenticated as krnadiger@gmail.com which is the active account specified by the [core/account] property.
+Secret Manager API has not been used in project belagavi-assignment-tracker before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=belagavi-assignment-tracker then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+Google developers console API activation
+https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=belagavi-assignment-tracker
+- '@type': type.googleapis.com/google.rpc.ErrorInfo
+  domain: googleapis.com
+  metadata:
+    activationUrl: https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=belagavi-assignment-tracker
+    consumer: projects/belagavi-assignment-tracker
+    containerInfo: belagavi-assignment-tracker
+    service: secretmanager.googleapis.com
+    serviceTitle: Secret Manager API
+  reason: SERVICE_DISABLED
+
+(venv) rrr@Krishna-Nadigers-MacBook-Pro Final strict %   gcloud services enable secretmanager.googleapis.com --project=belagavi-assignment-tracker
+Operation "operations/acat.p2-873613349845-365692cb-a316-4d22-9513-4404753513f9" finished successfully.
+(venv) rrr@Krishna-Nadigers-MacBook-Pro Final strict % echo -n "Chinnu_Krishna_wrecK_567*" | gcloud secrets create DB_PASSWORD --data-file=- --project=belagavi-assignment-tracker
+Created version [1] of the secret [DB_PASSWORD].

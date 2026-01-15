@@ -1,0 +1,25 @@
+# templates/core/principal/student_confirm_delete.html
+{% extends 'base.html' %}
+
+{% block title %}Delete Student{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">Delete Student</h2>
+    
+    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+        <p class="text-red-800">Are you sure you want to delete the student "{{ object.name }}" ({{ object.sts_number }})?</p>
+        <p class="text-red-600 text-sm mt-2">This action cannot be undone and will delete all assignment evaluations.</p>
+    </div>
+    
+    <form method="post" class="space-x-4">
+        {% csrf_token %}
+        <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded">
+            Yes, Delete
+        </button>
+        <a href="{% url 'manage_students' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

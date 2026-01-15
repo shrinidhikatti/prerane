@@ -1,0 +1,384 @@
+<!-- templates/core/principal/assignment_evaluation.html -->
+
+{% extends 'base.html' %}
+{% load dict_extras %}
+{% block title %}Evaluate Assignment{% endblock %}
+
+{% block content %}
+<style>
+.shadow-r {
+    box-shadow: 2px 0 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #9CA3AF #F3F4F6;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+    background: #F3F4F6;
+    border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #9CA3AF;
+    border-radius: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #6B7280;
+}
+
+/* Mobile touch improvements */
+@media (max-width: 768px) {
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+</style>
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                <i class="fas fa-check-double text-primary-600 mr-3"></i>
+                Evaluate Assignment
+            </h2>
+            <p class="text-gray-600 mt-2">Mark task completion status for each student</p>
+        </div>
+        <a href="{% url 'assignment_evaluations' %}" class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Assignments
+        </a>
+    </div>
+    
+    <!-- Assignment Details Card -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 md:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
+            <h3 class="text-lg md:text-xl font-bold text-blue-900 flex items-center">
+                <i class="fas fa-clipboard-list mr-2"></i>
+                <span class="truncate">{{ assignment.title }}</span>
+            </h3>
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 flex-shrink-0">
+                <i class="fas fa-layer-group mr-1"></i>
+                Class {{ assignment.standard }}
+            </span>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+            <div class="flex items-center text-blue-700 min-w-0">
+                <i class="fas fa-book text-purple-600 mr-2 flex-shrink-0"></i>
+                <span class="font-medium">Subject:</span>
+                <span class="ml-1 truncate">{{ assignment.subject.name }}</span>
+            </div>
+            <div class="flex items-center text-blue-700 min-w-0">
+                <i class="fas fa-calendar-alt text-green-600 mr-2 flex-shrink-0"></i>
+                <span class="font-medium">Start:</span>
+                <span class="ml-1 truncate">{{ assignment.start_date }}</span>
+            </div>
+            <div class="flex items-center text-blue-700 min-w-0 sm:col-span-2 lg:col-span-1">
+                <i class="fas fa-calendar-check text-red-600 mr-2 flex-shrink-0"></i>
+                <span class="font-medium">End:</span>
+                <span class="ml-1 truncate">{{ assignment.end_date }}</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tasks Card -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-list-ul text-orange-600 mr-2"></i>
+            Assignment Tasks ({{ assignment.tasks|length }})
+        </h3>
+        <div class="grid gap-3">
+            {% for task in assignment.tasks %}
+            <div class="flex items-start space-x-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
+                <div class="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                    {{ forloop.counter }}
+                </div>
+                <p class="text-gray-800 font-medium">{{ task }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- Evaluation Form -->
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                    <i class="fas fa-users mr-2"></i>
+                    Student Evaluations
+                </h3>
+            </div>
+            
+            {% if students %}
+            <!-- Mobile View -->
+            <div class="block md:hidden">
+                {% for student in students %}
+                <div class="bg-white border border-gray-200 rounded-lg mb-4 p-4">
+                    <div class="flex items-center space-x-3 mb-4 pb-3 border-b border-gray-200">
+                        <div class="bg-primary-100 p-2 rounded-lg">
+                            <i class="fas fa-user text-primary-600"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900">{{ student.name }}</div>
+                            <div class="text-xs text-gray-500">STS: {{ student.sts_number }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        {% for task in assignment.tasks %}
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-2 flex-1 min-w-0">
+                                <div class="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                    {{ forloop.counter }}
+                                </div>
+                                <span class="font-medium text-sm text-gray-800 truncate">{{ task }}</span>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <label class="cursor-pointer group flex flex-col items-center">
+                                    <input type="radio" name="student_{{ student.id }}_task_{{ forloop.counter0 }}" 
+                                           value="solved" class="sr-only"
+                                           {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'solved' %}checked{% endif %}>
+                                    <div class="radio-button w-10 h-10 rounded-lg border-2 border-green-300 flex items-center justify-center transition-all duration-200 group-hover:border-green-400 group-hover:bg-green-50 {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'solved' %}bg-green-500 border-green-500{% endif %}"
+                                         data-type="solved">
+                                        <i class="fas fa-check text-white text-lg transition-opacity duration-200 {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'solved' %}opacity-100{% else %}opacity-0{% endif %}"></i>
+                                    </div>
+                                    <span class="text-xs text-green-700 mt-1">✓</span>
+                                </label>
+                                <label class="cursor-pointer group flex flex-col items-center">
+                                    <input type="radio" name="student_{{ student.id }}_task_{{ forloop.counter0 }}" 
+                                           value="unsolved" class="sr-only"
+                                           {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'unsolved' %}checked{% endif %}>
+                                    <div class="radio-button w-10 h-10 rounded-lg border-2 border-red-300 flex items-center justify-center transition-all duration-200 group-hover:border-red-400 group-hover:bg-red-50 {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'unsolved' %}bg-red-500 border-red-500{% endif %}"
+                                         data-type="unsolved">
+                                        <i class="fas fa-times text-white text-lg transition-opacity duration-200 {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'unsolved' %}opacity-100{% else %}opacity-0{% endif %}"></i>
+                                    </div>
+                                    <span class="text-xs text-red-700 mt-1">✗</span>
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Desktop View -->
+            <div class="hidden md:block">
+                <div class="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900 sticky left-0 bg-gray-50 z-20 shadow-r">
+                                    <i class="fas fa-user-graduate mr-2 text-primary-600"></i>
+                                    Student Name
+                                </th>
+                                {% for task in assignment.tasks %}
+                                <th class="px-3 py-4 text-center text-sm font-semibold text-gray-900 min-w-[140px] max-w-[160px]">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-tasks text-orange-500 mb-1"></i>
+                                        <span class="text-xs">Task {{ forloop.counter }}</span>
+                                    </div>
+                                </th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for student in students %}
+                            <tr class="hover:bg-gray-50 transition-colors duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 sticky left-0 bg-white border-r border-gray-200 z-10 shadow-r">
+                                    <div class="flex items-center space-x-2 min-w-0">
+                                        <div class="bg-primary-100 p-2 rounded-lg flex-shrink-0">
+                                            <i class="fas fa-user text-primary-600"></i>
+                                        </div>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold truncate">{{ student.name }}</div>
+                                            <div class="text-xs text-gray-500">{{ student.sts_number }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% for task in assignment.tasks %}
+                                <td class="px-2 py-4 whitespace-nowrap text-center">
+                                    <div class="flex justify-center space-x-1">
+                                        <label class="cursor-pointer group flex flex-col items-center">
+                                            <input type="radio" name="student_{{ student.id }}_task_{{ forloop.counter0 }}" 
+                                                   value="solved" class="sr-only peer"
+                                                   {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'solved' %}checked{% endif %}>
+                                            <div class="w-8 h-8 rounded border-2 border-green-300 flex items-center justify-center transition-all duration-200 peer-checked:bg-green-500 peer-checked:border-green-500 group-hover:border-green-400 group-hover:bg-green-50">
+                                                <i class="fas fa-check text-white text-sm opacity-0 peer-checked:opacity-100 transition-opacity duration-200"></i>
+                                            </div>
+                                            <span class="text-xs text-green-700 mt-1">✓</span>
+                                        </label>
+                                        <label class="cursor-pointer group flex flex-col items-center">
+                                            <input type="radio" name="student_{{ student.id }}_task_{{ forloop.counter0 }}" 
+                                                   value="unsolved" class="sr-only peer"
+                                                   {% if evaluations|dict_lookup:student.id|dict_lookup:forloop.counter0 == 'unsolved' %}checked{% endif %}>
+                                            <div class="w-8 h-8 rounded border-2 border-red-300 flex items-center justify-center transition-all duration-200 peer-checked:bg-red-500 peer-checked:border-red-500 group-hover:border-red-400 group-hover:bg-red-50">
+                                                <i class="fas fa-times text-white text-sm opacity-0 peer-checked:opacity-100 transition-opacity duration-200"></i>
+                                            </div>
+                                            <span class="text-xs text-red-700 mt-1">✗</span>
+                                        </label>
+                                    </div>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Action Buttons -->
+            <div class="px-4 md:px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div class="flex flex-col gap-3 md:flex-row md:gap-4">
+                    <button type="submit" class="w-full md:flex-1 lg:flex-none inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 touch-target">
+                        <i class="fas fa-save mr-2"></i>
+                        Save Evaluation
+                    </button>
+                    <div class="flex gap-3 md:gap-4">
+                        <button type="button" onclick="markAllSolved()" class="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200 touch-target">
+                            <i class="fas fa-check-circle mr-2"></i>
+                            <span class="hidden sm:inline">Mark All Solved</span>
+                            <span class="sm:hidden">All ✓</span>
+                        </button>
+                        <button type="button" onclick="clearAll()" class="flex-1 md:flex-none inline-flex items-center justify-center px-4 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors duration-200 touch-target">
+                            <i class="fas fa-eraser mr-2"></i>
+                            <span class="hidden sm:inline">Clear All</span>
+                            <span class="sm:hidden">Clear</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                    <i class="fas fa-user-friends text-4xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-900 mb-2">No students found</h3>
+                <p class="text-gray-600 mb-6 max-w-md mx-auto">No students are registered for Class {{ assignment.standard }} in your school.</p>
+                <a href="{% url 'manage_students' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                    <i class="fas fa-user-plus mr-2"></i>
+                    Add Students
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+    
+    {% if students %}
+    <!-- Evaluation Guide -->
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+        <h4 class="text-lg font-semibold text-amber-900 mb-3 flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            Evaluation Guide
+        </h4>
+        <div class="grid md:grid-cols-2 gap-4 text-amber-800 text-sm">
+            <div class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span><strong>Solved:</strong> Student has successfully completed the task</span>
+            </div>
+            <div class="flex items-start">
+                <i class="fas fa-times-circle text-red-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span><strong>Unsolved:</strong> Student has not completed or struggled with the task</span>
+            </div>
+            <div class="flex items-start">
+                <i class="fas fa-mouse-pointer text-blue-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Click the buttons to mark each task for each student</span>
+            </div>
+            <div class="flex items-start">
+                <i class="fas fa-save text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Remember to save your evaluation when finished</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhance radio button behavior
+    const radioButtons = document.querySelectorAll('input[type="radio"]');
+    radioButtons.forEach(radio => {
+        radio.addEventListener('change', function() {
+            const radioName = this.name;
+            const selectedValue = this.value;
+            
+            // Update all radio buttons with the same name (both mobile and desktop)
+            const sameNameRadios = document.querySelectorAll(`input[name="${radioName}"]`);
+            sameNameRadios.forEach(sameRadio => {
+                const container = sameRadio.closest('label').querySelector('.radio-button') || 
+                                sameRadio.closest('label').querySelector('div[class*="border-"]');
+                const icon = container.querySelector('i');
+                
+                if (sameRadio.value === selectedValue) {
+                    // Selected radio button
+                    if (selectedValue === 'solved') {
+                        container.className = container.className.replace(/bg-\w+-\d+/g, '').replace(/border-\w+-\d+/g, '') + ' bg-green-500 border-green-500';
+                        icon.classList.remove('opacity-0');
+                        icon.classList.add('opacity-100');
+                    } else {
+                        container.className = container.className.replace(/bg-\w+-\d+/g, '').replace(/border-\w+-\d+/g, '') + ' bg-red-500 border-red-500';
+                        icon.classList.remove('opacity-0');
+                        icon.classList.add('opacity-100');
+                    }
+                } else {
+                    // Unselected radio button
+                    if (sameRadio.value === 'solved') {
+                        container.className = container.className.replace(/bg-green-\d+/g, 'border-green-300').replace(/border-green-5\d+/g, 'border-green-300');
+                    } else {
+                        container.className = container.className.replace(/bg-red-\d+/g, 'border-red-300').replace(/border-red-5\d+/g, 'border-red-300');
+                    }
+                    icon.classList.remove('opacity-100');
+                    icon.classList.add('opacity-0');
+                }
+            });
+            
+            // Add visual feedback for table cells (desktop)
+            const parent = this.closest('td');
+            if (parent) {
+                parent.classList.add('animate-pulse');
+                setTimeout(() => {
+                    parent.classList.remove('animate-pulse');
+                }, 300);
+            }
+        });
+    });
+});
+
+function markAllSolved() {
+    const solvedRadios = document.querySelectorAll('input[type="radio"][value="solved"]');
+    solvedRadios.forEach(radio => {
+        radio.checked = true;
+        radio.dispatchEvent(new Event('change'));
+    });
+}
+
+function clearAll() {
+    const allRadios = document.querySelectorAll('input[type="radio"]');
+    allRadios.forEach(radio => {
+        radio.checked = false;
+    });
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        document.querySelector('form').submit();
+    }
+});
+</script>
+{% endblock %}

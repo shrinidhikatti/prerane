@@ -1,0 +1,67 @@
+# templates/core/principal/student_form.html
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Edit Student{% else %}Add Student{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">
+        {% if object %}Edit Student{% else %}Add New Student{% endif %}
+    </h2>
+    
+    <div class="max-w-lg">
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            
+            <div>
+                <label for="{{ form.name.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Student Name
+                </label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.name.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.sts_number.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    STS Number/Enrollment Number
+                </label>
+                {{ form.sts_number }}
+                {% if form.sts_number.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.sts_number.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Gender
+                </label>
+                {{ form.gender }}
+                {% if form.gender.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.gender.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <label for="{{ form.standard.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                    Class/Standard
+                </label>
+                {{ form.standard }}
+                {% if form.standard.errors %}
+                <p class="text-red-500 text-sm mt-1">{{ form.standard.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="flex space-x-4">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+                    {% if object %}Update{% else %}Create{% endif %}
+                </button>
+                <a href="{% url 'manage_students' %}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load dict_extras %}
+
+{% block title %}Generate Reports{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h2 class="text-2xl font-bold text-gray-800">Generate Reports</h2>
+    
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <form method="post" class="space-y-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label for="{{ form.standard.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Class/Standard
+                    </label>
+                    {{ form.standard }}
+                </div>
+                
+                {% if not is_principal %}
+                <div>
+                    <label for="{{ form.taluka.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Taluka
+                    </label>
+                    {{ form.taluka }}
+                </div>
+                {% endif %}
+                
+                {% if not is_principal %}
+                <div>
+                    <label for="{{ form.school.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        School
+                    </label>
+                    {{ form.school }}
+                </div>
+                {% endif %}
+                
+                <div>
+                    <label for="{{ form.subject.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Subject
+                    </label>
+                    {{ form.subject }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.assignment.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Assignment
+                    </label>
+                    {{ form.assignment }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.start_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Start Date
+                    </label>
+                    {{ form.start_date }}
+                </div>
+                
+                <div>
+                    <label for="{{ form.end_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        End Date
+                    </label>
+                    {{ form.end_date }}
+                </div>
+            </div>
+            
+            <div class="flex space-x-4">
+                <button type="submit" name="download" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded">
+                    📥 Download Excel Report
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+        <h3 class="font-semibold text-blue-800 mb-2">Report Information</h3>
+        <ul class="text-blue-700 text-sm space-y-1">
+            <li>• Reports are generated in real-time based on your filters</li>
+            <li>• Excel files include: Student Name, STS Number, Gender, Class, School, Taluka</li>
+            <li>• <strong>If no assignment is selected:</strong> All assignments will be included in separate worksheets</li>
+            <li>• <strong>If assignment is selected:</strong> Individual task completion status will be included</li>
+            <li>• Task status shows: SOLVED or UNSOLVED for each task</li>
+            {% if is_principal %}
+            <li>• You can only access data for your school</li>
+            {% elif is_beo %}
+            <li>• You can only access data for schools in your taluka</li>
+            {% elif is_ddpi %}
+            <li>• You can access data for all schools in your district</li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

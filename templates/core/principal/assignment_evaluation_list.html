@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block title %}Assignment Evaluations{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                <i class="fas fa-check-circle text-primary-600 mr-3"></i>
+                Assignment Evaluations
+            </h2>
+            <p class="text-gray-600 mt-2">Evaluate assignments for students in your school</p>
+        </div>
+    </div>
+    
+    <!-- Assignments Grid -->
+    {% if assignments %}
+    <div class="grid gap-6">
+        {% for assignment in assignments %}
+        <div class="bg-gradient-to-r from-white to-gray-50 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div class="p-6">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                    <!-- Assignment Details -->
+                    <div class="flex-1">
+                        <div class="flex items-start justify-between mb-3">
+                            <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                                <i class="fas fa-clipboard-list text-primary-600 mr-2"></i>
+                                {{ assignment.title }}
+                            </h3>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                                <i class="fas fa-layer-group mr-1"></i>
+                                Class {{ assignment.standard }}
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-book text-purple-500 mr-2"></i>
+                                <span class="font-medium">Subject:</span>
+                                <span class="ml-1">{{ assignment.subject.name }}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-tasks text-orange-500 mr-2"></i>
+                                <span class="font-medium">Tasks:</span>
+                                <span class="ml-1">{{ assignment.tasks|length }}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar-alt text-green-500 mr-2"></i>
+                                <span class="font-medium">Start:</span>
+                                <span class="ml-1">{{ assignment.start_date }}</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fas fa-calendar-check text-red-500 mr-2"></i>
+                                <span class="font-medium">End:</span>
+                                <span class="ml-1">{{ assignment.end_date }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Indicator -->
+                        {% if assignment.evaluation_progress %}
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-gray-700">Evaluation Progress</span>
+                                <span class="text-sm font-semibold text-gray-900">{{ assignment.evaluation_progress.completed }}/{{ assignment.evaluation_progress.total }} students</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-green-600 h-2 rounded-full transition-all duration-300" style="width: {{ assignment.evaluation_progress.percentage }}%"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Tasks Preview -->
+                        {% if assignment.tasks %}
+                        <div class="mb-4">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-2 flex items-center">
+                                <i class="fas fa-list-ul text-orange-500 mr-1"></i>
+                                Tasks Preview
+                            </h4>
+                            <div class="flex flex-wrap gap-2">
+                                {% for task in assignment.tasks|slice:":2" %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-orange-100 text-orange-800">
+                                    {{ forloop.counter }}. {{ task|truncatechars:25 }}
+                                </span>
+                                {% endfor %}
+                                {% if assignment.tasks|length > 2 %}
+                                <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600">
+                                    +{{ assignment.tasks|length|add:"-2" }} more tasks
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <div class="flex flex-col gap-3">
+                        <a href="{% url 'evaluate_assignment' assignment.pk %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+                            <i class="fas fa-check-double mr-2"></i>
+                            Evaluate Assignment
+                        </a>
+                        {% if assignment.evaluation_progress.percentage > 0 %}
+                        <div class="text-center">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                <i class="fas fa-clock mr-1"></i>
+                                {{ assignment.evaluation_progress.percentage|floatformat:0 }}% Complete
+                            </span>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16">
+        <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-clipboard-check text-4xl text-gray-400"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No assignments to evaluate</h3>
+        <p class="text-gray-600 mb-6 max-w-md mx-auto">There are currently no assignments available for evaluation in your school's classes.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'manage_students' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                <i class="fas fa-user-friends mr-2"></i>
+                Manage Students
+            </a>
+            <a href="{% url 'dashboard' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+                <i class="fas fa-tachometer-alt mr-2"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if assignments %}
+    <!-- Info Panel -->
+    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+        <h4 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+            <i class="fas fa-info-circle mr-2"></i>
+            Evaluation Instructions
+        </h4>
+        <div class="grid md:grid-cols-2 gap-4 text-blue-800 text-sm">
+            <div class="flex items-start">
+                <i class="fas fa-mouse-pointer text-blue-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Click "Evaluate Assignment" to start marking tasks for students</span>
+            </div>
+            <div class="flex items-start">
+                <i class="fas fa-check-circle text-green-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Mark each task as "Solved" or "Unsolved" for each student</span>
+            </div>
+            <div class="flex items-start">
+                <i class="fas fa-save text-purple-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Your progress is saved automatically as you work</span>
+            </div>
+            <div class="flex items-start">
+                <i class="fas fa-chart-line text-orange-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                <span>Track completion progress with the progress bars</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

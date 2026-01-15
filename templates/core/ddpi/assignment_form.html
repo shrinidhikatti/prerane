@@ -1,0 +1,276 @@
+<!-- templates/core/ddpi/assignment_form.html -->
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Edit Assignment{% else %}Add Assignment{% endif %}{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                <i class="fas fa-{% if object %}edit{% else %}plus-circle{% endif %} text-primary-600 mr-3"></i>
+                {% if object %}Edit Assignment{% else %}Create New Assignment{% endif %}
+            </h2>
+            <p class="text-gray-600 mt-2">
+                {% if object %}Update assignment details and tasks{% else %}Create a new assignment for students to complete{% endif %}
+            </p>
+        </div>
+        <a href="{% url 'manage_assignments' %}" class="inline-flex items-center px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors duration-200">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Back to Assignments
+        </a>
+    </div>
+    
+    <!-- Form Card -->
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+            <div class="bg-gradient-to-r from-primary-600 to-primary-700 px-6 py-4">
+                <h3 class="text-lg font-semibold text-white flex items-center">
+                    <i class="fas fa-form mr-2"></i>
+                    Assignment Details
+                </h3>
+            </div>
+            
+            <div class="p-8">
+                <form method="post" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                            {% if field.name == 'title' %}
+                                <i class="fas fa-heading text-primary-600 mr-2"></i>
+                            {% elif field.name == 'subject' %}
+                                <i class="fas fa-book text-purple-600 mr-2"></i>
+                            {% elif field.name == 'standard' %}
+                                <i class="fas fa-layer-group text-green-600 mr-2"></i>
+                            {% elif field.name == 'start_date' %}
+                                <i class="fas fa-calendar-alt text-blue-600 mr-2"></i>
+                            {% elif field.name == 'end_date' %}
+                                <i class="fas fa-calendar-check text-red-600 mr-2"></i>
+                            {% elif field.name == 'tasks' %}
+                                <i class="fas fa-list-ul text-orange-600 mr-2"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle text-gray-600 mr-2"></i>
+                            {% endif %}
+                            {{ field.label }}
+                        </label>
+                        
+                        <div class="form-field-wrapper">
+                            {% if field.name == 'tasks' %}
+                                <div id="tasks-container">
+                                    {% if object and object.tasks %}
+                                        {% for task in object.tasks %}
+                                            <div class="task-input-group mb-3">
+                                                <div class="flex items-center gap-2">
+                                                    <input type="text" name="task_{{ forloop.counter }}" value="{{ task }}" class="flex-1 px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter task description">
+                                                    <button type="button" class="remove-task-btn px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="task-input-group mb-3">
+                                            <div class="flex items-center gap-2">
+                                                <input type="text" name="task_1" class="flex-1 px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter task description">
+                                                <button type="button" class="remove-task-btn px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors" style="display: none;">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="flex gap-2 mt-3">
+                                    <button type="button" id="add-task-btn" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors">
+                                        <i class="fas fa-plus mr-1"></i> Add Task
+                                    </button>
+                                </div>
+                                <input type="hidden" name="tasks" id="tasks-hidden" value="{% if object and object.tasks %}{{ object.tasks|join:'\n' }}{% endif %}">
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                        </div>
+                        
+                        {% if field.help_text %}
+                        <p class="text-gray-500 text-sm mt-2 flex items-center">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            {{ field.help_text }}
+                        </p>
+                        {% endif %}
+                        {% if field.errors %}
+                        <p class="text-red-600 text-sm mt-2 flex items-center">
+                            <i class="fas fa-exclamation-circle mr-1"></i>
+                            {{ field.errors.0 }}
+                        </p>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-gray-200">
+                        <button type="submit" class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all duration-200">
+                            <i class="fas fa-{% if object %}save{% else %}plus{% endif %} mr-2"></i>
+                            {% if object %}Update Assignment{% else %}Create Assignment{% endif %}
+                        </button>
+                        <a href="{% url 'manage_assignments' %}" class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-colors duration-200">
+                            <i class="fas fa-times mr-2"></i>
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Help Section -->
+        <div class="mt-8 bg-blue-50 border border-blue-200 rounded-xl p-6">
+            <h4 class="text-lg font-semibold text-blue-900 mb-3 flex items-center">
+                <i class="fas fa-lightbulb mr-2"></i>
+                Tips for Creating Assignments
+            </h4>
+            <ul class="text-blue-800 space-y-2 text-sm">
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-blue-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                    Choose a clear, descriptive title that explains the assignment's purpose
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-blue-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                    Add multiple tasks to break down the assignment into manageable parts
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-blue-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                    Set appropriate start and end dates to give students enough time
+                </li>
+                <li class="flex items-start">
+                    <i class="fas fa-check-circle text-blue-600 mr-2 mt-0.5 flex-shrink-0"></i>
+                    Select the correct class and subject for proper assignment distribution
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Style all form fields */
+.form-field-wrapper input, 
+.form-field-wrapper select, 
+.form-field-wrapper textarea {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease-in-out !important;
+    background-color: white !important;
+    font-size: 14px !important;
+}
+
+.form-field-wrapper input:focus,
+.form-field-wrapper select:focus,
+.form-field-wrapper textarea:focus {
+    outline: none !important;
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+}
+
+.form-field-wrapper textarea {
+    resize: vertical !important;
+    min-height: 100px !important;
+}
+
+.form-field-wrapper select {
+    cursor: pointer !important;
+}
+
+/* Style radio buttons and checkboxes if any */
+.form-field-wrapper input[type="radio"],
+.form-field-wrapper input[type="checkbox"] {
+    width: auto !important;
+    padding: 0 !important;
+    margin-right: 8px !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    let taskCounter = document.querySelectorAll('.task-input-group').length;
+    const tasksContainer = document.getElementById('tasks-container');
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const tasksHidden = document.getElementById('tasks-hidden');
+
+    function updateTasksField() {
+        const taskInputs = document.querySelectorAll('input[name^="task_"]');
+        const tasks = [];
+        taskInputs.forEach(input => {
+            if (input.value.trim()) {
+                tasks.push(input.value.trim());
+            }
+        });
+        tasksHidden.value = tasks.join('\n');
+    }
+
+    function updateRemoveButtons() {
+        const taskGroups = document.querySelectorAll('.task-input-group');
+        const removeButtons = document.querySelectorAll('.remove-task-btn');
+        
+        removeButtons.forEach((btn, index) => {
+            btn.style.display = taskGroups.length > 1 ? 'block' : 'none';
+        });
+    }
+
+    function addTaskInput() {
+        taskCounter++;
+        const taskGroup = document.createElement('div');
+        taskGroup.className = 'task-input-group mb-3';
+        taskGroup.innerHTML = `
+            <div class="flex items-center gap-2">
+                <input type="text" name="task_${taskCounter}" class="flex-1 px-3 py-2 border border-gray-300 rounded-md" placeholder="Enter task description">
+                <button type="button" class="remove-task-btn px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        `;
+        
+        tasksContainer.appendChild(taskGroup);
+        
+        // Add event listeners to new input and button
+        const newInput = taskGroup.querySelector('input');
+        const newButton = taskGroup.querySelector('.remove-task-btn');
+        
+        newInput.addEventListener('input', updateTasksField);
+        newButton.addEventListener('click', function() {
+            taskGroup.remove();
+            updateTasksField();
+            updateRemoveButtons();
+        });
+        
+        updateRemoveButtons();
+        newInput.focus();
+    }
+
+    // Add event listener to add task button
+    addTaskBtn.addEventListener('click', addTaskInput);
+
+    // Add event listeners to existing inputs and remove buttons
+    document.querySelectorAll('input[name^="task_"]').forEach(input => {
+        input.addEventListener('input', updateTasksField);
+    });
+
+    document.querySelectorAll('.remove-task-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            btn.closest('.task-input-group').remove();
+            updateTasksField();
+            updateRemoveButtons();
+        });
+    });
+
+    // Initialize
+    updateRemoveButtons();
+
+    // Update hidden field before form submission
+    document.querySelector('form').addEventListener('submit', function() {
+        updateTasksField();
+    });
+});
+</script>
+{% endblock %}

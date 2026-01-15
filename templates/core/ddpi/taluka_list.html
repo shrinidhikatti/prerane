@@ -1,0 +1,87 @@
+<!-- templates/core/ddpi/taluka_list.html -->
+{% extends 'base.html' %}
+
+{% block title %}Manage Talukas{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    <!-- Header Section -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h2 class="text-3xl font-bold text-gray-900 flex items-center">
+                <i class="fas fa-map-marked-alt text-primary-600 mr-3"></i>
+                Manage Talukas
+            </h2>
+            <p class="text-gray-600 mt-2">Manage administrative blocks and their districts in your region</p>
+        </div>
+        <a href="{% url 'create_taluka' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+            <i class="fas fa-plus mr-2"></i>
+            Add New Taluka
+        </a>
+    </div>
+    
+    <!-- Talukas Grid -->
+    {% if talukas %}
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {% for taluka in talukas %}
+        <div class="bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition-all duration-300 overflow-hidden">
+            <div class="p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-green-100 p-3 rounded-lg">
+                            <i class="fas fa-map-marker-alt text-green-600 text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">{{ taluka.name }}</h3>
+                            <p class="text-sm text-gray-600 flex items-center">
+                                <i class="fas fa-city text-blue-500 mr-1"></i>
+                                {{ taluka.district.name }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Section -->
+                <!-- <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-blue-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-blue-600">{{ taluka.schools.count|default:0 }}</div>
+                        <div class="text-xs text-blue-700 font-medium">Schools</div>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-3 text-center">
+                        <div class="text-2xl font-bold text-purple-600">{{ taluka.beo_profiles.count|default:0 }}</div>
+                        <div class="text-xs text-purple-700 font-medium">BEOs</div>
+                    </div>
+                </div> -->
+                
+                <!-- Action Buttons -->
+                <div class="flex space-x-3">
+                    <a href="{% url 'update_taluka' taluka.pk %}" class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200">
+                        <i class="fas fa-edit mr-2"></i>
+                        Edit
+                    </a>
+                    <a href="{% url 'delete_taluka' taluka.pk %}" class="flex-1 inline-flex items-center justify-center px-3 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors duration-200">
+                        <i class="fas fa-trash mr-2"></i>
+                        Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% else %}
+    <!-- Empty State -->
+    <div class="text-center py-16">
+        <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+            <i class="fas fa-map-marked-alt text-4xl text-gray-400"></i>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No talukas yet</h3>
+        <p class="text-gray-600 mb-6 max-w-md mx-auto">Start by creating your first taluka to organize schools and administrative blocks.</p>
+        <a href="{% url 'create_taluka' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200">
+            <i class="fas fa-plus mr-2"></i>
+            Create First Taluka
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

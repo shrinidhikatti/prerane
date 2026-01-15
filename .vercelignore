@@ -1,0 +1,11 @@
+venv
+*.pyc
+__pycache__
+.DS_Store
+*.xlsx
+deploy_us_central.sh
+reload_production_data.sh
+Dockerfile
+DEPLOYMENT_README.md
+*.md
+staticfiles_build
