@@ -13,9 +13,9 @@ ENV/
 
 # Django
 *.log
-db.sqlite3
 db.sqlite3-journal
 /staticfiles_build
+/staticfiles
 /static_root
 
 # IDE
