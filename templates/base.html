@@ -26,7 +26,7 @@
         }
     </script>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen flex flex-col">
     <!-- Navigation Header -->
     <nav class="bg-gradient-to-r from-primary-600 to-primary-700 shadow-xl border-b border-primary-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -78,7 +78,7 @@
 
     {% if user.is_authenticated %}
     <!-- Layout for authenticated users -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1">
         <div class="flex flex-col lg:flex-row gap-8">
             <!-- Mobile Sidebar Overlay -->
             <div id="mobile-sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden"></div>
@@ -194,6 +194,20 @@
         </div>
     </div>
     {% endif %}
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-r from-primary-600 to-primary-700 mt-auto border-t border-primary-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="text-center text-white">
+                <p class="text-sm mb-2">
+                    © 2025-2026 All Rights Reserved
+                </p>
+                <p class="text-xs text-blue-100">
+                    Designed and Developed by <span class="font-semibold">Shrinidhi Katti</span> and <span class="font-semibold">Krishna Nadiger</span>
+                </p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
