@@ -8,7 +8,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'krishna-shrinidhi-nadiger-katti')
 
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', '.now.sh']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app', '.now.sh', 'prerane.in', 'www.prerane.in']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
