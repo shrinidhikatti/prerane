@@ -6,117 +6,481 @@
     <title>Login - Prerane</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+            --primary-800: #1e40af;
+            --primary-900: #1e3a8a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            position: relative;
+            overflow-x: hidden;
+            background: #f8fafc;
+        }
+
+        .display-font {
+            font-family: 'Sora', sans-serif;
+        }
+
+        /* Animated gradient mesh background */
+        .gradient-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(at 27% 37%, hsla(215, 98%, 61%, 0.3) 0px, transparent 50%),
+                radial-gradient(at 97% 21%, hsla(125, 98%, 72%, 0.15) 0px, transparent 50%),
+                radial-gradient(at 52% 99%, hsla(354, 98%, 61%, 0.15) 0px, transparent 50%),
+                radial-gradient(at 10% 29%, hsla(256, 96%, 67%, 0.2) 0px, transparent 50%),
+                radial-gradient(at 97% 96%, hsla(38, 60%, 74%, 0.2) 0px, transparent 50%),
+                radial-gradient(at 33% 50%, hsla(222, 67%, 73%, 0.25) 0px, transparent 50%),
+                radial-gradient(at 79% 53%, hsla(343, 68%, 79%, 0.15) 0px, transparent 50%);
+            background-color: #f1f5f9;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { filter: hue-rotate(0deg); }
+            50% { filter: hue-rotate(20deg); }
+        }
+
+        /* Glassmorphism card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Logo container */
+        .logo-container {
+            animation: fadeIn 0.8s ease-out 0.2s backwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Input fields */
+        .input-wrapper {
+            position: relative;
+            animation: slideIn 0.5s ease-out backwards;
+        }
+
+        .input-wrapper:nth-child(1) { animation-delay: 0.3s; }
+        .input-wrapper:nth-child(2) { animation-delay: 0.4s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .modern-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #1e293b;
+        }
+
+        .modern-input::placeholder {
+            color: #94a3b8;
+        }
+
+        .modern-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            background: rgba(255, 255, 255, 1);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            transition: color 0.3s ease;
+        }
+
+        .modern-input:focus ~ .input-icon {
+            color: var(--primary-600);
+        }
+
+        /* Sign In Button */
+        .signin-button {
+            position: relative;
+            width: 100%;
+            padding: 1.125rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            box-shadow:
+                0 10px 25px -5px rgba(37, 99, 235, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            animation: buttonSlide 0.6s ease-out 0.5s backwards;
+        }
+
+        @keyframes buttonSlide {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .signin-button::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .signin-button:hover::before {
+            opacity: 1;
+        }
+
+        .signin-button:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 20px 35px -5px rgba(37, 99, 235, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+        }
+
+        .signin-button:active {
+            transform: translateY(-1px);
+        }
+
+        .signin-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Password toggle */
+        .password-toggle {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--primary-600);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        /* Role cards */
+        .role-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: roleCardIn 0.5s ease-out backwards;
+        }
+
+        .role-card:nth-child(1) { animation-delay: 0.6s; }
+        .role-card:nth-child(2) { animation-delay: 0.7s; }
+        .role-card:nth-child(3) { animation-delay: 0.8s; }
+
+        @keyframes roleCardIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .role-card:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .role-icon {
+            width: 3rem;
+            height: 3rem;
+            margin: 0 auto 0.75rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            transition: transform 0.3s ease;
+        }
+
+        .role-card:hover .role-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        /* Error message */
+        .error-alert {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border-left: 4px solid #ef4444;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            animation: shakeError 0.5s ease;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-4px); }
+        }
+
+        /* Floating elements */
+        .float-element {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.15;
+            pointer-events: none;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(20px, -20px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .glass-card {
+                margin: 1rem;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Animated gradient background -->
+    <div class="gradient-bg"></div>
+
+    <!-- Floating elements -->
+    <div class="float-element" style="top: 10%; left: 10%; width: 200px; height: 200px; background: #3b82f6;"></div>
+    <div class="float-element" style="bottom: 10%; right: 10%; width: 250px; height: 250px; background: #8b5cf6; animation-delay: -3s;"></div>
+    <div class="float-element" style="top: 50%; right: 20%; width: 180px; height: 180px; background: #06b6d4; animation-delay: -1.5s;"></div>
+
+    <!-- Main Content -->
+    <div class="w-full max-w-md relative z-10">
+
+        <!-- Logo -->
+        <div class="logo-container text-center mb-8">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl shadow-xl mb-4">
+                <i class="fas fa-graduation-cap text-white text-3xl"></i>
+            </div>
+            <h1 class="text-4xl font-bold display-font text-slate-800 mb-1">Prerane</h1>
+            <p class="text-slate-600 font-medium">प्रेरणे • Education Management Portal</p>
+        </div>
+
+        <!-- Glass Card -->
+        <div class="glass-card rounded-3xl p-8 sm:p-10">
+
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Welcome Back</h2>
+                <p class="text-slate-600">Sign in to continue to your dashboard</p>
+            </div>
+
+            <!-- Error Message -->
+            {% if form.errors %}
+            <div class="error-alert mb-6">
+                <div class="flex items-start gap-3">
+                    <i class="fas fa-exclamation-circle text-red-600 text-lg mt-0.5"></i>
+                    <div>
+                        <p class="font-semibold text-red-800 text-sm">Authentication Failed</p>
+                        <p class="text-red-700 text-sm mt-1">Please check your username and password.</p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Login Form -->
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+
+                <!-- Username -->
+                <div class="input-wrapper">
+                    <label for="username" class="block text-sm font-semibold text-slate-700 mb-2">
+                        Username
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="text"
+                            name="username"
+                            id="username"
+                            class="modern-input"
+                            placeholder="Enter your username"
+                            required
+                            autocomplete="username"
+                        >
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-wrapper">
+                    <label for="password" class="block text-sm font-semibold text-slate-700 mb-2">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="modern-input"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                        <i class="fas fa-lock input-icon"></i>
+                        <button type="button" onclick="togglePassword()" class="password-toggle">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sign In Button -->
+                <button type="submit" class="signin-button">
+                    <span class="flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Sign In</span>
+                        <i class="fas fa-arrow-right text-sm"></i>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Access Levels -->
+            <div class="mt-8 pt-6 border-t border-slate-200">
+                <p class="text-center text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">
+                    Access Levels
+                </p>
+                <div class="grid grid-cols-3 gap-3">
+                    <!-- DDPI -->
+                    <div class="role-card">
+                        <div class="role-icon bg-gradient-to-br from-amber-500 to-amber-600">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <p class="font-bold text-xs text-slate-800">DDPI</p>
+                        <p class="text-xs text-slate-600 mt-1">District</p>
+                    </div>
+
+                    <!-- BEO -->
+                    <div class="role-card">
+                        <div class="role-icon bg-gradient-to-br from-blue-500 to-blue-600">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <p class="font-bold text-xs text-slate-800">BEO</p>
+                        <p class="text-xs text-slate-600 mt-1">Block</p>
+                    </div>
+
+                    <!-- Principal -->
+                    <div class="role-card">
+                        <div class="role-icon bg-gradient-to-br from-emerald-500 to-emerald-600">
+                            <i class="fas fa-school"></i>
+                        </div>
+                        <p class="font-bold text-xs text-slate-800">Principal</p>
+                        <p class="text-xs text-slate-600 mt-1">School</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-6">
+            <p class="text-sm text-slate-600">
+                © 2025-2026 All Rights Reserved
+            </p>
+            <p class="text-xs text-slate-500 mt-1">
+                Designed and Developed by
+                <span class="font-semibold text-slate-700">Shrinidhi Katti</span>
+                and
+                <span class="font-semibold text-slate-700">Krishna Nadiger</span>
+            </p>
+        </div>
+    </div>
+
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        }
-                    }
-                }
+        // Password toggle
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('fa-eye');
+                toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('fa-eye-slash');
+                toggleIcon.classList.add('fa-eye');
             }
         }
     </script>
-</head>
-<body class="bg-gradient-to-br from-primary-50 via-blue-50 to-indigo-100 h-screen flex flex-col">
-    <!-- Background Pattern -->
-    <div class="absolute inset-0 opacity-5">
-        <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #3b82f6 1px, transparent 1px), radial-gradient(circle at 75% 75%, #3b82f6 1px, transparent 1px); background-size: 24px 24px;"></div>
-    </div>
-
-    <div class="relative flex-1 flex items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-md w-full">
-            <!-- Header -->
-            <div class="text-center mb-4">
-                <div class="flex justify-center mb-2">
-                    <div class="bg-gradient-to-r from-primary-600 to-primary-700 p-3 rounded-2xl shadow-lg">
-                        <i class="fas fa-graduation-cap text-2xl text-white"></i>
-                    </div>
-                </div>
-                <h1 class="text-2xl font-bold text-gray-900">Welcome Back</h1>
-                <p class="text-gray-600 text-sm mt-1">Sign in to Prerane</p>
-            </div>
-
-            <!-- Login Card -->
-            <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
-                {% if form.errors %}
-                    <div class="mb-4 bg-red-50 border border-red-200 rounded-lg p-3">
-                        <div class="flex items-center space-x-2 text-red-800">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <span class="font-medium text-sm">Login Failed</span>
-                        </div>
-                        <p class="text-red-700 text-xs mt-1">Please check your username and password.</p>
-                    </div>
-                {% endif %}
-
-                <form method="post" class="space-y-4">
-                    {% csrf_token %}
-                    
-                    <div>
-                        <label for="username" class="block text-sm font-semibold text-gray-700 mb-1">
-                            <i class="fas fa-user mr-1 text-primary-600"></i>Username
-                        </label>
-                        <input type="text" name="username" id="username"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white/50"
-                               placeholder="Enter your username" required>
-                    </div>
-
-                    <div>
-                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">
-                            <i class="fas fa-lock mr-1 text-primary-600"></i>Password
-                        </label>
-                        <input type="password" name="password" id="password"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200 bg-white/50"
-                               placeholder="Enter your password" required>
-                    </div>
-
-                    <button type="submit" class="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span>Sign In</span>
-                    </button>
-                </form>
-                
-                <!-- Role Info -->
-                <div class="mt-4 pt-4 border-t border-gray-200">
-                    <div class="text-center text-xs text-gray-600">
-                        <p class="font-medium mb-2">Access Levels:</p>
-                        <div class="flex justify-center space-x-4">
-                            <div class="flex items-center space-x-1">
-                                <i class="fas fa-crown text-amber-500"></i>
-                                <span>DDPI</span>
-                            </div>
-                            <div class="flex items-center space-x-1">
-                                <i class="fas fa-user-tie text-blue-500"></i>
-                                <span>BEO</span>
-                            </div>
-                            <div class="flex items-center space-x-1">
-                                <i class="fas fa-school text-green-500"></i>
-                                <span>Principal</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="relative bg-gradient-to-r from-primary-600 to-primary-700 border-t border-primary-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-            <div class="text-center text-white">
-                <p class="text-xs text-blue-100">
-                    © 2025-2026 All Rights Reserved | Designed and Developed by <span class="font-semibold">Shrinidhi Katti</span> and <span class="font-semibold">Krishna Nadiger</span>
-                </p>
-            </div>
-        </div>
-    </footer>
 </body>
 </html>
